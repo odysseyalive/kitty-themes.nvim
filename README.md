@@ -17,7 +17,7 @@ A comprehensive Neovim colorscheme plugin that brings all the beautiful [kitty t
 
 ```lua
 {
-  "your-username/kitty-themes.nvim",
+  "odysseyalive/kitty-themes.nvim",
   config = function()
     require("kitty-themes").setup({
       -- Enable auto-detection
@@ -36,7 +36,7 @@ A comprehensive Neovim colorscheme plugin that brings all the beautiful [kitty t
 
 ```lua
 use {
-  "your-username/kitty-themes.nvim",
+  "odysseyalive/kitty-themes.nvim",
   config = function()
     require("kitty-themes").setup()
   end
@@ -119,11 +119,13 @@ require("kitty-themes").setup({
 The plugin includes sophisticated auto-detection capabilities:
 
 ### Local Terminal Detection
+
 - **OSC Sequences**: Query terminal for background color and theme information
 - **Environment Variables**: Check terminal-specific variables
 - **Background Analysis**: Automatically determine light/dark background
 
 ### Remote Terminal Support
+
 - **SSH Environment Forwarding**: Forward theme information over SSH
 - **Dotfile Parsing**: Parse local terminal configurations
 - **Fallback Methods**: Multiple detection strategies for headless environments
