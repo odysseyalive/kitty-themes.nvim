@@ -1,34 +1,37 @@
 # kitty-themes.nvim
 
-A comprehensive Neovim colorscheme plugin that brings all the beautiful [kitty terminal themes](https://github.com/kovidgoyal/kitty-themes) to Neovim with intelligent auto-detection features.
+A comprehensive Neovim colorscheme plugin that brings all the beautiful [kitty terminal themes](https://github.com/kovidgoyal/kitty-themes) to Neovim.
 
 ## Features
 
 - 🎨 **169 Beautiful Themes**: All themes from the official kitty-themes collection
-- 🔍 **Auto-Detection**: Automatically detect your terminal theme and background
-- 🌐 **Remote Support**: Works over SSH with proper environment forwarding
-- ⚡ **Performance**: Embedded theme data for fast loading
-- 🎛️ **Interactive**: Easy theme switching with preview functionality
+- 🎛️ **Interactive Selection**: Easy theme switching with preview functionality
+- ⚡ **Performance**: Fast loading with embedded theme data
 - 🔧 **Configurable**: Extensive customization options
+- 💻 **Terminal Colors**: Proper terminal color support
 
 ## Installation
 
 ### Using [lazy.nvim](https://github.com/folke/lazy.nvim)
 
 ```lua
-{
-  "odysseyalive/kitty-themes.nvim",
-  config = function()
-    require("kitty-themes").setup({
-      -- Enable auto-detection
-      auto_detect = true,
-      auto_detect_background = true,
-      
-      -- Other options
-      transparent = false,
-      term_colors = true,
-    })
-  end,
+return {
+  {
+    "odysseyalive/kitty-themes.nvim",
+    config = function()
+      require("kitty-themes").setup({
+        -- Configuration options
+        transparent = false,
+        term_colors = true,
+      })
+    end,
+  },
+  {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "SeaShells",
+    },
+  }
 }
 ```
 
@@ -51,14 +54,11 @@ use {
 " Load a specific theme
 :KittyThemes Dracula
 
-" Auto-detect and load theme
-:KittyThemesDetect
+" Interactive theme selector
+:KittyThemes
 
 " List all available themes
 :KittyThemesList
-
-" Show terminal information
-:KittyThemesInfo
 
 " Preview themes interactively
 :KittyThemesPreview
@@ -72,17 +72,14 @@ use {
 ```lua
 local kitty_themes = require("kitty-themes")
 
--- Load a theme
+-- Load a specific theme
 kitty_themes.load("Monokai")
-
--- Auto-detect theme
-kitty_themes.auto_detect()
 
 -- Get available themes
 local themes = kitty_themes.get_themes()
 
--- Get terminal information
-local info = kitty_themes.get_terminal_info()
+-- Parse a kitty theme file
+local colors = kitty_themes.parse_kitty_theme(content)
 ```
 
 ## Configuration
@@ -100,49 +97,72 @@ require("kitty-themes").setup({
   
   -- Show ending tildes
   ending_tildes = false,
-  
-  -- Auto-detection settings
-  auto_detect = false, -- Auto-detect on startup
-  auto_detect_background = true, -- Auto-detect light/dark background
-  
-  -- Detection configuration
-  detect = {
-    osc_timeout = 100, -- OSC query timeout in milliseconds
-    fallback_enabled = true, -- Enable fallback detection methods
-    debug = false, -- Enable debug output
-  },
 })
 ```
 
-## Auto-Detection
+## Theme Selection
 
-The plugin includes sophisticated auto-detection capabilities:
+### Interactive Selection
 
-### Local Terminal Detection
+The easiest way to choose a theme is using the interactive selector:
 
-- **OSC Sequences**: Query terminal for background color and theme information
-- **Environment Variables**: Check terminal-specific variables
-- **Background Analysis**: Automatically determine light/dark background
-
-### Remote Terminal Support
-
-- **SSH Environment Forwarding**: Forward theme information over SSH
-- **Dotfile Parsing**: Parse local terminal configurations
-- **Fallback Methods**: Multiple detection strategies for headless environments
-
-### Setting up SSH Forwarding
-
-Add to your local shell configuration (`.bashrc`, `.zshrc`):
-
-```bash
-# Forward terminal theme information over SSH
-if [ -n "$KITTY_WINDOW_ID" ]; then
-  export BACKGROUND_THEME="$(kitty @ get-colors 2>/dev/null | grep -E '^# ' | head -1 | cut -d' ' -f2-)"
-fi
-
-# SSH with forwarded environment
-alias ssh='SSH_ENV="TERM_PROGRAM COLORTERM BACKGROUND_THEME" ssh'
+```vim
+:KittyThemes
 ```
+
+This opens a menu where you can browse and select from all 169 available themes.
+
+### Direct Theme Loading
+
+If you know the theme name, load it directly:
+
+```vim
+:KittyThemes Dracula
+:KittyThemes gruvbox_dark  
+:KittyThemes OneDark
+:KittyThemes Github
+```
+
+### Browse All Themes
+
+View all themes organized by category:
+
+```vim
+:KittyThemesList
+```
+
+### Preview Mode
+
+Try themes with live preview:
+
+```vim
+:KittyThemesPreview
+```
+
+Use arrow keys to navigate, Enter to confirm, Esc to cancel.
+
+### Random Theme
+
+Feeling adventurous?
+
+```vim
+:KittyThemesRandom
+```
+
+## Quick Start
+
+1. **Install the plugin** using your preferred plugin manager
+2. **Browse themes**: `:KittyThemesList` to see all available options
+3. **Try a theme**: `:KittyThemes Dracula` (or any theme name)  
+4. **Interactive selection**: `:KittyThemes` to open the theme picker
+5. **Preview mode**: `:KittyThemesPreview` to test themes with live preview
+
+## Popular Themes to Try
+
+- **Dark themes**: `Dracula`, `OneDark`, `gruvbox_dark`, `Monokai`
+- **Light themes**: `Github`, `AtomOneLight`, `gruvbox_light`, `PencilLight`  
+- **Material themes**: `Material`, `MaterialDark`, `OceanicMaterial`
+- **Unique themes**: `Batman`, `Cyberpunk`, `Galaxy`, `Neon`
 
 ## Available Themes
 
@@ -177,9 +197,7 @@ python3 build.py
 kitty-themes.nvim/
 ├── lua/kitty-themes/
 │   ├── init.lua          # Main plugin entry point
-│   ├── detect.lua        # Auto-detection system
-│   ├── remote.lua        # Remote/SSH support
-│   ├── commands.lua      # User commands
+│   ├── commands.lua      # User commands and interface
 │   └── embedded.lua      # Embedded theme data
 ├── colors/               # Generated .vim colorschemes
 ├── themes/               # Original kitty theme files

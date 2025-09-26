@@ -17,25 +17,11 @@ function M.setup()
     desc = 'Load a kitty theme or open theme selector'
   })
   
-  -- Auto-detection command
-  vim.api.nvim_create_user_command('KittyThemesDetect', function()
-    require('kitty-themes.detect').detect_and_switch()
-  end, {
-    desc = 'Auto-detect and load appropriate theme'
-  })
-  
   -- List all available themes
   vim.api.nvim_create_user_command('KittyThemesList', function()
     M.list_themes()
   end, {
     desc = 'List all available kitty themes'
-  })
-  
-  -- Show current terminal info
-  vim.api.nvim_create_user_command('KittyThemesInfo', function()
-    M.show_terminal_info()
-  end, {
-    desc = 'Show terminal and theme detection information'
   })
   
   -- Preview themes
@@ -175,64 +161,6 @@ function M.list_themes()
   vim.keymap.set('n', 'q', close_window, { buffer = buf, silent = true })
   vim.keymap.set('n', '<Esc>', close_window, { buffer = buf, silent = true })
   vim.keymap.set('n', '<CR>', select_theme_under_cursor, { buffer = buf, silent = true })
-end
-
--- Show terminal and detection information
-function M.show_terminal_info()
-  local info = require('kitty-themes.detect').get_terminal_info()
-  
-  local lines = {}
-  table.insert(lines, 'Terminal Information')
-  table.insert(lines, string.rep('=', 20))
-  table.insert(lines, '')
-  table.insert(lines, 'Terminal Name: ' .. (info.name or 'Unknown'))
-  table.insert(lines, 'Background: ' .. (info.background or 'Unknown'))
-  table.insert(lines, 'TERM: ' .. (info.term_var or 'Not set'))
-  table.insert(lines, 'COLORTERM: ' .. (info.colorterm or 'Not set'))
-  table.insert(lines, 'TERM_PROGRAM: ' .. (info.term_program or 'Not set'))
-  table.insert(lines, '')
-  
-  if info.background_color then
-    table.insert(lines, 'Background RGB: ' .. string.format('(%d, %d, %d)', 
-      info.background_color.r, info.background_color.g, info.background_color.b))
-    table.insert(lines, '')
-  end
-  
-  if info.remote and info.remote.is_remote then
-    table.insert(lines, 'Remote Session: Yes')
-    if info.remote.ssh_info then
-      table.insert(lines, 'SSH Client: ' .. (info.remote.ssh_info.client_ip or 'Unknown'))
-      table.insert(lines, 'SSH TTY: ' .. (info.remote.ssh_info.tty or 'Not set'))
-    end
-    if info.remote.theme_detection and info.remote.theme_detection.theme then
-      table.insert(lines, 'Detected Theme: ' .. info.remote.theme_detection.theme)
-      table.insert(lines, 'Detection Method: ' .. (info.remote.theme_detection.method or 'Unknown'))
-      table.insert(lines, 'Confidence: ' .. (info.remote.theme_detection.confidence or 0))
-    end
-  else
-    table.insert(lines, 'Remote Session: No')
-  end
-  
-  -- Display in a floating window
-  local buf = vim.api.nvim_create_buf(false, true)
-  local win = vim.api.nvim_open_win(buf, true, {
-    relative = 'editor',
-    width = 60,
-    height = #lines + 4,
-    col = math.floor((vim.o.columns - 60) / 2),
-    row = math.floor((vim.o.lines - #lines - 4) / 2),
-    style = 'minimal',
-    border = 'rounded',
-    title = ' Terminal Info ',
-    title_pos = 'center',
-  })
-  
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-  vim.api.nvim_buf_set_option(buf, 'modifiable', false)
-  
-  vim.keymap.set('n', 'q', function()
-    vim.api.nvim_win_close(win, true)
-  end, { buffer = buf, silent = true })
 end
 
 -- Preview themes with quick switching

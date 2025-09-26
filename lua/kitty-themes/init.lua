@@ -7,8 +7,6 @@ M.config = {
   term_colors = true, -- true/false
   ending_tildes = false, -- true/false
   cmp_itemkind_reverse = false, -- true/false
-  auto_detect = false, -- Auto-detect terminal theme on startup
-  auto_detect_background = true, -- Auto-detect light/dark background
 }
 
 -- Setup function to apply configuration
@@ -17,12 +15,6 @@ function M.setup(opts)
   
   -- Setup commands
   require('kitty-themes.commands').setup()
-  
-  -- Enable auto-detection if requested
-  if M.config.auto_detect then
-    vim.g.kitty_themes_auto_detect = true
-    require('kitty-themes.detect').setup_auto_detection()
-  end
 end
 
 -- Color palette parser for kitty themes
@@ -169,15 +161,6 @@ function M.load(theme_name)
     return
   end
   
-  -- Auto-detect background if enabled
-  if M.config.auto_detect_background and not vim.g.kitty_themes_background_set then
-    local background = require('kitty-themes.detect').detect_background_lightness()
-    if background then
-      vim.o.background = background
-      vim.g.kitty_themes_background_set = true
-    end
-  end
-  
   -- Read and parse theme
   local content = table.concat(vim.fn.readfile(theme_file), '\n')
   local colors = parse_kitty_theme(content)
@@ -208,11 +191,6 @@ function M.get_themes()
   table.sort(themes)
   return themes
 end
-
--- Auto-detection functions
-M.auto_detect = require('kitty-themes.detect').auto_detect_and_load
-M.detect_and_switch = require('kitty-themes.detect').detect_and_switch
-M.get_terminal_info = require('kitty-themes.detect').get_terminal_info
 
 -- Expose parse function for external use
 M.parse_kitty_theme = parse_kitty_theme
