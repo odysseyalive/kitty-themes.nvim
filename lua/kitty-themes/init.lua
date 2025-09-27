@@ -12,26 +12,22 @@ M.config = {
 -- Setup function to apply configuration
 function M.setup(opts)
   M.config = vim.tbl_deep_extend('force', M.config, opts or {})
-  
-  -- Setup commands
-  require('kitty-themes.commands').setup()
+  -- Setup commands directly to avoid circular dependency
+  M.setup_commands()
 end
 
--- Color palette parser for kitty themes
+-- Color parser
 local function parse_kitty_theme(theme_content)
   local colors = {}
   local lines = vim.split(theme_content, '\n', { plain = true })
   
   for _, line in ipairs(lines) do
-    -- Skip comments and empty lines
     if line:match('^%s*#') or line:match('^%s*$') then
       goto continue
     end
     
-    -- Parse color definitions
-    local key, value = line:match('(%w+)%s+(.+)')
+    local key, value = line:match('([%w_]+)%s+(.+)')
     if key and value then
-      -- Clean up the color value
       value = value:gsub('#', ''):gsub('%s+', '')
       if #value == 6 then
         colors[key] = '#' .. value
@@ -44,30 +40,56 @@ local function parse_kitty_theme(theme_content)
   return colors
 end
 
--- Convert kitty colors to Neovim highlight groups
-local function apply_highlights(colors)
-  -- Terminal colors mapping
-  local terminal_colors = {
-    colors.color0,   -- black
-    colors.color1,   -- red
-    colors.color2,   -- green
-    colors.color3,   -- yellow
-    colors.color4,   -- blue
-    colors.color5,   -- magenta
-    colors.color6,   -- cyan
-    colors.color7,   -- white
-    colors.color8,   -- bright black
-    colors.color9,   -- bright red
-    colors.color10,  -- bright green
-    colors.color11,  -- bright yellow
-    colors.color12,  -- bright blue
-    colors.color13,  -- bright magenta
-    colors.color14,  -- bright cyan
-    colors.color15,  -- bright white
-  }
+-- Light theme detection
+local function is_light_theme(bg_color)
+  if not bg_color or bg_color == 'NONE' then
+    return false
+  end
+  local hex = bg_color:gsub('#', '')
+  if #hex ~= 6 then
+    return false
+  end
+  
+  local r = tonumber(hex:sub(1, 2), 16) / 255
+  local g = tonumber(hex:sub(3, 4), 16) / 255
+  local b = tonumber(hex:sub(5, 6), 16) / 255
+  
+  local luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b
+  return luminance > 0.5
+end
+
+-- Load theme
+function M.load(theme_name)
+  local theme_file = string.format('%s/themes/%s.conf', vim.fn.fnamemodify(debug.getinfo(1).source:sub(2), ':h:h:h'), theme_name)
+  
+  if vim.fn.filereadable(theme_file) == 0 then
+    vim.notify('Theme file not found: ' .. theme_file, vim.log.levels.ERROR)
+    return
+  end
+  
+  local content = table.concat(vim.fn.readfile(theme_file), '\n')
+  local colors = parse_kitty_theme(content)
+  
+  -- Apply the theme
+  vim.cmd('hi clear')
+  if vim.fn.exists('syntax_on') then
+    vim.cmd('syntax reset')
+  end
+  
+  vim.o.termguicolors = true
+  vim.g.colors_name = theme_name
+  
+  -- Set background option
+  vim.o.background = is_light_theme(colors.background) and 'light' or 'dark'
   
   -- Set terminal colors if enabled
   if M.config.term_colors then
+    local terminal_colors = {
+      colors.color0, colors.color1, colors.color2, colors.color3,
+      colors.color4, colors.color5, colors.color6, colors.color7,
+      colors.color8, colors.color9, colors.color10, colors.color11,
+      colors.color12, colors.color13, colors.color14, colors.color15,
+    }
     for i, color in ipairs(terminal_colors) do
       if color then
         vim.g['terminal_color_' .. (i - 1)] = color
@@ -75,11 +97,12 @@ local function apply_highlights(colors)
     end
   end
   
-  -- Basic highlight groups
+  -- Apply comprehensive highlights
+  local bg_color = M.config.transparent and 'NONE' or colors.background
   local highlights = {
     -- Editor highlights
-    Normal = { fg = colors.foreground, bg = M.config.transparent and 'NONE' or colors.background },
-    NormalFloat = { fg = colors.foreground, bg = colors.background },
+    Normal = { fg = colors.foreground, bg = bg_color },
+    NormalFloat = { fg = colors.foreground, bg = M.config.transparent and 'NONE' or colors.background },
     Cursor = { fg = colors.background, bg = colors.cursor or colors.foreground },
     CursorLine = { bg = colors.color8 or colors.background },
     LineNr = { fg = colors.color8 or colors.color7 },
@@ -151,33 +174,7 @@ local function apply_highlights(colors)
   end
 end
 
--- Load a specific kitty theme
-function M.load(theme_name)
-  local theme_file = string.format('%s/themes/%s.conf', vim.fn.fnamemodify(debug.getinfo(1).source:sub(2), ':h:h:h'), theme_name)
-  
-  -- Check if theme file exists
-  if vim.fn.filereadable(theme_file) == 0 then
-    vim.notify('Theme file not found: ' .. theme_file, vim.log.levels.ERROR)
-    return
-  end
-  
-  -- Read and parse theme
-  local content = table.concat(vim.fn.readfile(theme_file), '\n')
-  local colors = parse_kitty_theme(content)
-  
-  -- Apply the theme
-  vim.cmd('hi clear')
-  if vim.fn.exists('syntax_on') then
-    vim.cmd('syntax reset')
-  end
-  
-  vim.o.termguicolors = true
-  vim.g.colors_name = theme_name
-  
-  apply_highlights(colors)
-end
-
--- Get list of available themes
+-- Get themes
 function M.get_themes()
   local themes_dir = string.format('%s/themes', vim.fn.fnamemodify(debug.getinfo(1).source:sub(2), ':h:h:h'))
   local themes = {}
@@ -192,7 +189,92 @@ function M.get_themes()
   return themes
 end
 
--- Expose parse function for external use
+-- Setup user commands (avoiding circular dependency)
+function M.setup_commands()
+  -- Main command to select and load themes
+  vim.api.nvim_create_user_command('KittyThemes', function(opts)
+    if opts.args and opts.args ~= '' then
+      M.load(opts.args)
+    else
+      M.select_theme()
+    end
+  end, {
+    nargs = '?',
+    complete = function()
+      return M.get_themes()
+    end,
+    desc = 'Load a kitty theme or open theme selector'
+  })
+  
+  -- List all available themes
+  vim.api.nvim_create_user_command('KittyThemesList', function()
+    M.list_themes()
+  end, {
+    desc = 'List all available kitty themes'
+  })
+  
+  -- Random theme
+  vim.api.nvim_create_user_command('KittyThemesRandom', function()
+    M.random_theme()
+  end, {
+    desc = 'Load a random kitty theme'
+  })
+end
+
+-- Interactive theme selector
+function M.select_theme()
+  local themes = M.get_themes()
+  
+  if #themes == 0 then
+    vim.notify('No kitty themes found', vim.log.levels.ERROR)
+    return
+  end
+  
+  vim.ui.select(themes, {
+    prompt = 'Select a kitty theme:',
+    format_item = function(item)
+      return item:gsub('_', ' '):gsub('%.', ' ')
+    end,
+  }, function(choice)
+    if choice then
+      M.load(choice)
+      vim.notify('Loaded theme: ' .. choice)
+    end
+  end)
+end
+
+-- List themes (simplified version)
+function M.list_themes()
+  local themes = M.get_themes()
+  
+  if #themes == 0 then
+    vim.notify('No kitty themes found', vim.log.levels.ERROR)
+    return
+  end
+  
+  print("Available themes:")
+  for i, theme in ipairs(themes) do
+    print(string.format("%3d. %s", i, theme))
+  end
+end
+
+-- Load a random theme
+function M.random_theme()
+  local themes = M.get_themes()
+  
+  if #themes == 0 then
+    vim.notify('No themes available', vim.log.levels.ERROR)
+    return
+  end
+  
+  math.randomseed(os.time())
+  local random_index = math.random(1, #themes)
+  local theme = themes[random_index]
+  
+  M.load(theme)
+  vim.notify('Random theme loaded: ' .. theme)
+end
+
 M.parse_kitty_theme = parse_kitty_theme
 
 return M

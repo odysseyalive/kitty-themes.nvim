@@ -1,18 +1,22 @@
 local M = {}
 
+local kt_module = nil
+
 -- Setup user commands
-function M.setup()
+function M.setup(kitty_themes_module)
+  kt_module = kitty_themes_module
+  
   -- Main command to select and load themes
   vim.api.nvim_create_user_command('KittyThemes', function(opts)
     if opts.args and opts.args ~= '' then
-      require('kitty-themes').load(opts.args)
+      kt_module.load(opts.args)
     else
       M.select_theme()
     end
   end, {
     nargs = '?',
     complete = function()
-      return require('kitty-themes').get_themes()
+      return kt_module.get_themes()
     end,
     desc = 'Load a kitty theme or open theme selector'
   })
@@ -41,7 +45,7 @@ end
 
 -- Interactive theme selector
 function M.select_theme()
-  local themes = require('kitty-themes').get_themes()
+  local themes = kt_module.get_themes()
   
   if #themes == 0 then
     vim.notify('No kitty themes found', vim.log.levels.ERROR)
@@ -56,7 +60,7 @@ function M.select_theme()
     end,
   }, function(choice)
     if choice then
-      require('kitty-themes').load(choice)
+      kt_module.load(choice)
       vim.notify('Loaded theme: ' .. choice)
     end
   end)
@@ -64,7 +68,7 @@ end
 
 -- List all themes in a nice format
 function M.list_themes()
-  local themes = require('kitty-themes').get_themes()
+  local themes = kt_module.get_themes()
   
   if #themes == 0 then
     vim.notify('No kitty themes found', vim.log.levels.ERROR)
@@ -153,7 +157,7 @@ function M.list_themes()
     local theme = line:match('  • (.+)')
     if theme then
       close_window()
-      require('kitty-themes').load(theme)
+      kt_module.load(theme)
       vim.notify('Loaded theme: ' .. theme)
     end
   end
@@ -165,7 +169,7 @@ end
 
 -- Preview themes with quick switching
 function M.preview_themes()
-  local themes = require('kitty-themes').get_themes()
+  local themes = kt_module.get_themes()
   local original_theme = vim.g.colors_name
   local current_index = 1
   
@@ -180,7 +184,7 @@ function M.preview_themes()
   local function load_theme_at_index(index)
     if index >= 1 and index <= #themes then
       current_index = index
-      require('kitty-themes').load(themes[current_index])
+      kt_module.load(themes[current_index])
       return themes[current_index]
     end
   end
@@ -232,7 +236,7 @@ end
 
 -- Load a random theme
 function M.random_theme()
-  local themes = require('kitty-themes').get_themes()
+  local themes = kt_module.get_themes()
   
   if #themes == 0 then
     vim.notify('No themes available', vim.log.levels.ERROR)
@@ -243,7 +247,7 @@ function M.random_theme()
   local random_index = math.random(1, #themes)
   local theme = themes[random_index]
   
-  require('kitty-themes').load(theme)
+  kt_module.load(theme)
   vim.notify('Random theme loaded: ' .. theme)
 end
 
