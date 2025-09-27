@@ -100,6 +100,29 @@ require("kitty-themes").setup({
 })
 ```
 
+### Transparency
+
+The plugin supports transparent backgrounds in two ways:
+
+1. **Lua API**: When using `require("kitty-themes").load("ThemeName")`, the transparency setting from `setup()` is respected automatically.
+
+2. **Vim colorschemes**: When using `:colorscheme ThemeName`, you need to set the global variable first:
+   ```lua
+   vim.g.kitty_themes_transparent = 1  -- Enable transparency
+   vim.g.kitty_themes_transparent = 0  -- Disable transparency (default)
+   ```
+
+**Example usage:**
+```lua
+-- For transparent backgrounds with traditional colorscheme command
+vim.g.kitty_themes_transparent = 1
+vim.cmd('colorscheme Dracula')
+
+-- Or use the Lua API which respects the setup configuration
+require("kitty-themes").setup({transparent = true})
+require("kitty-themes").load("Dracula")
+```
+
 ## Theme Selection
 
 ### Interactive Selection

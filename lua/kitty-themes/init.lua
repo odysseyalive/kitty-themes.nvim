@@ -12,6 +12,10 @@ M.config = {
 -- Setup function to apply configuration
 function M.setup(opts)
   M.config = vim.tbl_deep_extend('force', M.config, opts or {})
+  
+  -- Set global variable for vim colorschemes to respect transparency
+  vim.g.kitty_themes_transparent = M.config.transparent and 1 or 0
+  
   -- Setup commands directly to avoid circular dependency
   M.setup_commands()
 end

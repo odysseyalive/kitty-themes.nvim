@@ -11,7 +11,8 @@ set termguicolors
 
 " Define colors
 let s:none = 'NONE'
-let s:bg = '#1d1f21'
+let s:bg_solid = '#1d1f21'
+let s:bg = get(g:, 'kitty_themes_transparent', 0) ? s:none : s:bg_solid
 let s:fg = '#c4c8c5'
 let s:cursor = '#c4c8c5'
 let s:selection = '#363a41'
@@ -36,21 +37,25 @@ let s:color15 = '#fffefe'
 
 " Helper function for setting highlights
 function! s:hi(group, guifg, guibg, attr)
-  exec 'hi ' . a:group . ' guifg=' . a:guifg . ' guibg=' . a:guibg . ' gui=' . a:attr
+  if a:guibg == s:none
+    exec 'hi ' . a:group . ' guifg=' . a:guifg . ' guibg=NONE gui=' . a:attr
+  else
+    exec 'hi ' . a:group . ' guifg=' . a:guifg . ' guibg=' . a:guibg . ' gui=' . a:attr
+  endif
 endfunction
 
 " Basic highlighting
 call s:hi('Normal', s:fg, s:bg, s:none)
 call s:hi('NormalFloat', s:fg, s:bg, s:none)
-call s:hi('Cursor', s:bg, s:cursor, s:none)
+call s:hi('Cursor', s:bg_solid, s:cursor, s:none)
 call s:hi('CursorLine', s:none, s:color8, s:none)
 call s:hi('CursorColumn', s:none, s:color8, s:none)
 call s:hi('LineNr', s:color8, s:none, s:none)
 call s:hi('CursorLineNr', s:fg, s:none, 'bold')
 call s:hi('Visual', s:none, s:selection, s:none)
 call s:hi('VisualNOS', s:none, s:selection, s:none)
-call s:hi('Search', s:bg, s:color3, s:none)
-call s:hi('IncSearch', s:bg, s:color11, s:none)
+call s:hi('Search', s:bg_solid, s:color3, s:none)
+call s:hi('IncSearch', s:bg_solid, s:color11, s:none)
 
 " Syntax highlighting
 call s:hi('Comment', s:color8, s:none, 'italic')
