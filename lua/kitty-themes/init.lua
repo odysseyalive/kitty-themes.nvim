@@ -112,7 +112,6 @@ function M.load(theme_name)
   local highlights = {
     -- Editor highlights
     Normal = { fg = colors.foreground, bg = bg_color },
-    NormalFloat = { fg = colors.foreground, bg = M.config.transparent and 'NONE' or colors.background },
     NormalNC = { fg = colors.foreground, bg = bg_color }, -- Non-current windows
     Cursor = { fg = colors.background, bg = colors.cursor or colors.foreground },
     CursorLine = { bg = cursor_line_bg },
@@ -126,16 +125,16 @@ function M.load(theme_name)
     IncSearch = { fg = colors.background, bg = colors.color11 },
     
     -- Window and UI elements
-    StatusLine = { fg = colors.foreground, bg = colors.color0 or colors.background },
-    StatusLineNC = { fg = colors.color8, bg = colors.color0 or colors.background },
-    TabLine = { fg = colors.color8, bg = colors.color0 or colors.background },
-    TabLineFill = { bg = colors.color0 or colors.background },
-    TabLineSel = { fg = colors.foreground, bg = colors.background },
+    StatusLine = { fg = colors.foreground, bg = M.config.transparent and 'NONE' or (colors.color0 or colors.background) },
+    StatusLineNC = { fg = colors.color8, bg = M.config.transparent and 'NONE' or (colors.color0 or colors.background) },
+    TabLine = { fg = colors.color8, bg = M.config.transparent and 'NONE' or (colors.color0 or colors.background) },
+    TabLineFill = { bg = M.config.transparent and 'NONE' or (colors.color0 or colors.background) },
+    TabLineSel = { fg = colors.foreground, bg = M.config.transparent and 'NONE' or colors.background },
     WinSeparator = { fg = colors.color8 },
     VertSplit = { fg = colors.color8 },
     
     -- Popup menu
-    Pmenu = { fg = colors.foreground, bg = colors.color0 or colors.background },
+    Pmenu = { fg = colors.foreground, bg = M.config.transparent and 'NONE' or (colors.color0 or colors.background) },
     PmenuSel = { fg = colors.background, bg = colors.color6 },
     PmenuSbar = { bg = colors.color8 },
     PmenuThumb = { bg = colors.foreground },
