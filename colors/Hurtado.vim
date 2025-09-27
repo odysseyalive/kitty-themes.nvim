@@ -1,14 +1,11 @@
 " Hurtado colorscheme for Neovim
 " Generated from kitty theme: Hurtado
-
 hi clear
 if exists('syntax_on')
   syntax reset
 endif
-
 let g:colors_name = 'Hurtado'
 set termguicolors
-
 " Define colors
 let s:none = 'NONE'
 let s:bg_solid = '#000000'
@@ -17,8 +14,43 @@ let s:fg = '#dadbda'
 let s:cursor = '#bbbbbb'
 let s:selection = '#b4d5ff'
 
+" Terminal colors
+let s:color0 = '#575757'
+let s:color1 = '#ff1b00'
+let s:color2 = '#a5df55'
+let s:color3 = '#fbe74a'
+let s:color4 = '#486387'
+let s:color5 = '#fc5ef0'
+let s:color6 = '#85e9fe'
+let s:color7 = '#cbcbcb'
+let s:color8 = '#252525'
+let s:color9 = '#d41c00'
+let s:color10 = '#a5df55'
+let s:color11 = '#fbe749'
+let s:color12 = '#89bdff'
+let s:color13 = '#bf00c0'
+let s:color14 = '#85e9fe'
+let s:color15 = '#dbdbdb'
 
-" Additional UI and modern feature highlights
+" Helper function for setting highlights
+function! s:hi(group, guifg, guibg, attr)
+  let l:attr = a:attr
+  let l:sp = ''
+  
+  " Extract sp= from attr if present
+  if l:attr =~ 'sp='
+    let l:sp = ' gui' . substitute(l:attr, '.*\(sp=#[0-9a-fA-F]\{6\}\).*', '\1', '')
+    let l:attr = substitute(l:attr, '\s*sp=#[0-9a-fA-F]\{6\}\s*', ' ', 'g')
+    let l:attr = substitute(l:attr, '^\s\+\|\s\+$', '', 'g')  " trim whitespace
+  endif
+  
+  if a:guibg == s:none
+    exec 'hi ' . a:group . ' guifg=' . a:guifg . ' guibg=NONE gui=' . l:attr . l:sp
+  else
+    exec 'hi ' . a:group . ' guifg=' . a:guifg . ' guibg=' . a:guibg . ' gui=' . l:attr . l:sp
+  endif
+endfunction
+
 call s:hi('StatusLine', s:fg, s:color8, 'bold')
 call s:hi('StatusLineNC', s:color8, s:color0, 'NONE')
 call s:hi('StatusLineTerm', s:fg, s:color8, 'bold')
@@ -66,35 +98,6 @@ call s:hi('markdownCodeBlock', s:color6, s:color0, 'NONE')
 call s:hi('markdownCodeDelimiter', s:color8, s:none, 'NONE')
 call s:hi('@text.literal.markdown', s:color6, s:color0, 'NONE')
 call s:hi('@text.literal.block.markdown', s:color6, s:color0, 'NONE')
-
-" Terminal colors
-let s:color0 = '#575757'
-let s:color1 = '#ff1b00'
-let s:color2 = '#a5df55'
-let s:color3 = '#fbe74a'
-let s:color4 = '#486387'
-let s:color5 = '#fc5ef0'
-let s:color6 = '#85e9fe'
-let s:color7 = '#cbcbcb'
-let s:color8 = '#252525'
-let s:color9 = '#d41c00'
-let s:color10 = '#a5df55'
-let s:color11 = '#fbe749'
-let s:color12 = '#89bdff'
-let s:color13 = '#bf00c0'
-let s:color14 = '#85e9fe'
-let s:color15 = '#dbdbdb'
-
-" Helper function for setting highlights
-function! s:hi(group, guifg, guibg, attr)
-  if a:guibg == s:none
-    exec 'hi ' . a:group . ' guifg=' . a:guifg . ' guibg=NONE gui=' . a:attr
-  else
-    exec 'hi ' . a:group . ' guifg=' . a:guifg . ' guibg=' . a:guibg . ' gui=' . a:attr
-  endif
-endfunction
-
-" Basic highlighting
 call s:hi('Normal', s:fg, s:bg, s:none)
 call s:hi('NormalFloat', s:fg, s:bg, s:none)
 call s:hi('Cursor', s:bg_solid, s:cursor, s:none)
@@ -106,8 +109,6 @@ call s:hi('Visual', s:none, s:selection, s:none)
 call s:hi('VisualNOS', s:none, s:selection, s:none)
 call s:hi('Search', s:bg_solid, s:color3, s:none)
 call s:hi('IncSearch', s:bg_solid, s:color11, s:none)
-
-" Syntax highlighting
 call s:hi('Comment', s:color8, s:none, 'italic')
 call s:hi('Constant', s:color12, s:none, s:none)
 call s:hi('String', s:color2, s:none, s:none)
@@ -139,24 +140,16 @@ call s:hi('Tag', s:color9, s:none, s:none)
 call s:hi('Delimiter', s:fg, s:none, s:none)
 call s:hi('SpecialComment', s:color8, s:none, 'italic')
 call s:hi('Debug', s:color9, s:none, s:none)
-
-" Error and warning
 call s:hi('Error', s:color9, s:none, s:none)
 call s:hi('ErrorMsg', s:color9, s:none, s:none)
 call s:hi('WarningMsg', s:color11, s:none, s:none)
-
-" Diff
 call s:hi('DiffAdd', s:color2, s:none, s:none)
 call s:hi('DiffChange', s:color3, s:none, s:none)
 call s:hi('DiffDelete', s:color1, s:none, s:none)
 call s:hi('DiffText', s:color4, s:none, s:none)
-
-" Git signs
 call s:hi('GitSignsAdd', s:color2, s:none, s:none)
 call s:hi('GitSignsChange', s:color3, s:none, s:none)
 call s:hi('GitSignsDelete', s:color1, s:none, s:none)
-
-" LSP diagnostics
 call s:hi('DiagnosticError', s:color9, s:none, s:none)
 call s:hi('DiagnosticWarn', s:color11, s:none, s:none)
 call s:hi('DiagnosticInfo', s:color12, s:none, s:none)

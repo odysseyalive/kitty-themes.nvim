@@ -1,14 +1,11 @@
 " Japanesque colorscheme for Neovim
 " Generated from kitty theme: Japanesque
-
 hi clear
 if exists('syntax_on')
   syntax reset
 endif
-
 let g:colors_name = 'Japanesque'
 set termguicolors
-
 " Define colors
 let s:none = 'NONE'
 let s:bg_solid = '#1d1d1d'
@@ -17,8 +14,43 @@ let s:fg = '#f7f6ec'
 let s:cursor = '#eccf4f'
 let s:selection = '#165776'
 
+" Terminal colors
+let s:color0 = '#343835'
+let s:color1 = '#ce3e60'
+let s:color2 = '#7bb75b'
+let s:color3 = '#e8b32a'
+let s:color4 = '#4c99d3'
+let s:color5 = '#a57fc4'
+let s:color6 = '#389aac'
+let s:color7 = '#f9faf6'
+let s:color8 = '#585a58'
+let s:color9 = '#d18ea6'
+let s:color10 = '#767e2b'
+let s:color11 = '#77592e'
+let s:color12 = '#135879'
+let s:color13 = '#5f4190'
+let s:color14 = '#76bbca'
+let s:color15 = '#b1b5ae'
 
-" Additional UI and modern feature highlights
+" Helper function for setting highlights
+function! s:hi(group, guifg, guibg, attr)
+  let l:attr = a:attr
+  let l:sp = ''
+  
+  " Extract sp= from attr if present
+  if l:attr =~ 'sp='
+    let l:sp = ' gui' . substitute(l:attr, '.*\(sp=#[0-9a-fA-F]\{6\}\).*', '\1', '')
+    let l:attr = substitute(l:attr, '\s*sp=#[0-9a-fA-F]\{6\}\s*', ' ', 'g')
+    let l:attr = substitute(l:attr, '^\s\+\|\s\+$', '', 'g')  " trim whitespace
+  endif
+  
+  if a:guibg == s:none
+    exec 'hi ' . a:group . ' guifg=' . a:guifg . ' guibg=NONE gui=' . l:attr . l:sp
+  else
+    exec 'hi ' . a:group . ' guifg=' . a:guifg . ' guibg=' . a:guibg . ' gui=' . l:attr . l:sp
+  endif
+endfunction
+
 call s:hi('StatusLine', s:fg, s:color8, 'bold')
 call s:hi('StatusLineNC', s:color8, s:color0, 'NONE')
 call s:hi('StatusLineTerm', s:fg, s:color8, 'bold')
@@ -66,35 +98,6 @@ call s:hi('markdownCodeBlock', s:color6, s:color0, 'NONE')
 call s:hi('markdownCodeDelimiter', s:color8, s:none, 'NONE')
 call s:hi('@text.literal.markdown', s:color6, s:color0, 'NONE')
 call s:hi('@text.literal.block.markdown', s:color6, s:color0, 'NONE')
-
-" Terminal colors
-let s:color0 = '#343835'
-let s:color1 = '#ce3e60'
-let s:color2 = '#7bb75b'
-let s:color3 = '#e8b32a'
-let s:color4 = '#4c99d3'
-let s:color5 = '#a57fc4'
-let s:color6 = '#389aac'
-let s:color7 = '#f9faf6'
-let s:color8 = '#585a58'
-let s:color9 = '#d18ea6'
-let s:color10 = '#767e2b'
-let s:color11 = '#77592e'
-let s:color12 = '#135879'
-let s:color13 = '#5f4190'
-let s:color14 = '#76bbca'
-let s:color15 = '#b1b5ae'
-
-" Helper function for setting highlights
-function! s:hi(group, guifg, guibg, attr)
-  if a:guibg == s:none
-    exec 'hi ' . a:group . ' guifg=' . a:guifg . ' guibg=NONE gui=' . a:attr
-  else
-    exec 'hi ' . a:group . ' guifg=' . a:guifg . ' guibg=' . a:guibg . ' gui=' . a:attr
-  endif
-endfunction
-
-" Basic highlighting
 call s:hi('Normal', s:fg, s:bg, s:none)
 call s:hi('NormalFloat', s:fg, s:bg, s:none)
 call s:hi('Cursor', s:bg_solid, s:cursor, s:none)
@@ -106,8 +109,6 @@ call s:hi('Visual', s:none, s:selection, s:none)
 call s:hi('VisualNOS', s:none, s:selection, s:none)
 call s:hi('Search', s:bg_solid, s:color3, s:none)
 call s:hi('IncSearch', s:bg_solid, s:color11, s:none)
-
-" Syntax highlighting
 call s:hi('Comment', s:color8, s:none, 'italic')
 call s:hi('Constant', s:color12, s:none, s:none)
 call s:hi('String', s:color2, s:none, s:none)
@@ -139,24 +140,16 @@ call s:hi('Tag', s:color9, s:none, s:none)
 call s:hi('Delimiter', s:fg, s:none, s:none)
 call s:hi('SpecialComment', s:color8, s:none, 'italic')
 call s:hi('Debug', s:color9, s:none, s:none)
-
-" Error and warning
 call s:hi('Error', s:color9, s:none, s:none)
 call s:hi('ErrorMsg', s:color9, s:none, s:none)
 call s:hi('WarningMsg', s:color11, s:none, s:none)
-
-" Diff
 call s:hi('DiffAdd', s:color2, s:none, s:none)
 call s:hi('DiffChange', s:color3, s:none, s:none)
 call s:hi('DiffDelete', s:color1, s:none, s:none)
 call s:hi('DiffText', s:color4, s:none, s:none)
-
-" Git signs
 call s:hi('GitSignsAdd', s:color2, s:none, s:none)
 call s:hi('GitSignsChange', s:color3, s:none, s:none)
 call s:hi('GitSignsDelete', s:color1, s:none, s:none)
-
-" LSP diagnostics
 call s:hi('DiagnosticError', s:color9, s:none, s:none)
 call s:hi('DiagnosticWarn', s:color11, s:none, s:none)
 call s:hi('DiagnosticInfo', s:color12, s:none, s:none)
