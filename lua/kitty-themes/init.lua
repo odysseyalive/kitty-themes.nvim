@@ -1,5 +1,8 @@
 local M = {}
 
+-- Load embedded theme data
+local embedded = require('kitty-themes.embedded')
+
 -- Configuration defaults
 M.config = {
   style = "darker", -- darker, dark, cool, deep, warm, warmer, light
@@ -20,29 +23,7 @@ function M.setup(opts)
   M.setup_commands()
 end
 
--- Color parser
-local function parse_kitty_theme(theme_content)
-  local colors = {}
-  local lines = vim.split(theme_content, '\n', { plain = true })
-  
-  for _, line in ipairs(lines) do
-    if line:match('^%s*#') or line:match('^%s*$') then
-      goto continue
-    end
-    
-    local key, value = line:match('([%w_]+)%s+(.+)')
-    if key and value then
-      value = value:gsub('#', ''):gsub('%s+', '')
-      if #value == 6 then
-        colors[key] = '#' .. value
-      end
-    end
-    
-    ::continue::
-  end
-  
-  return colors
-end
+-- No longer needed - using embedded theme data
 
 -- Light theme detection
 local function is_light_theme(bg_color)
@@ -64,15 +45,13 @@ end
 
 -- Load theme
 function M.load(theme_name)
-  local theme_file = string.format('%s/themes/%s.conf', vim.fn.fnamemodify(debug.getinfo(1).source:sub(2), ':h:h:h'), theme_name)
+  -- Get theme data from embedded themes
+  local colors = embedded.get_theme(theme_name)
   
-  if vim.fn.filereadable(theme_file) == 0 then
-    vim.notify('Theme file not found: ' .. theme_file, vim.log.levels.ERROR)
+  if not colors then
+    vim.notify('Theme not found: ' .. theme_name, vim.log.levels.ERROR)
     return
   end
-  
-  local content = table.concat(vim.fn.readfile(theme_file), '\n')
-  local colors = parse_kitty_theme(content)
   
   -- Ensure we have required colors
   if not colors.background or not colors.foreground then
@@ -226,17 +205,7 @@ end
 
 -- Get themes
 function M.get_themes()
-  local themes_dir = string.format('%s/themes', vim.fn.fnamemodify(debug.getinfo(1).source:sub(2), ':h:h:h'))
-  local themes = {}
-  
-  local files = vim.fn.glob(themes_dir .. '/*.conf', false, true)
-  for _, file in ipairs(files) do
-    local theme_name = vim.fn.fnamemodify(file, ':t:r')
-    table.insert(themes, theme_name)
-  end
-  
-  table.sort(themes)
-  return themes
+  return embedded.get_theme_names()
 end
 
 -- Setup user commands (avoiding circular dependency)
