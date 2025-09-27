@@ -70,17 +70,25 @@ function M.load(theme_name)
   local content = table.concat(vim.fn.readfile(theme_file), '\n')
   local colors = parse_kitty_theme(content)
   
-  -- Apply the theme
+  -- Ensure we have required colors
+  if not colors.background or not colors.foreground then
+    vim.notify('Invalid theme: missing background or foreground colors', vim.log.levels.ERROR)
+    return
+  end
+  
+  -- Clear everything first
   vim.cmd('hi clear')
   if vim.fn.exists('syntax_on') then
     vim.cmd('syntax reset')
   end
   
+  -- Set essential options
   vim.o.termguicolors = true
   vim.g.colors_name = theme_name
   
-  -- Set background option
-  vim.o.background = is_light_theme(colors.background) and 'light' or 'dark'
+  -- Set background option before applying highlights
+  local is_light = is_light_theme(colors.background)
+  vim.o.background = is_light and 'light' or 'dark'
   
   -- Set terminal colors if enabled
   if M.config.term_colors then
@@ -99,18 +107,38 @@ function M.load(theme_name)
   
   -- Apply comprehensive highlights
   local bg_color = M.config.transparent and 'NONE' or colors.background
+  local cursor_line_bg = M.config.transparent and 'NONE' or (colors.selection_background or colors.color0 or colors.background)
+  
   local highlights = {
     -- Editor highlights
     Normal = { fg = colors.foreground, bg = bg_color },
     NormalFloat = { fg = colors.foreground, bg = M.config.transparent and 'NONE' or colors.background },
+    NormalNC = { fg = colors.foreground, bg = bg_color }, -- Non-current windows
     Cursor = { fg = colors.background, bg = colors.cursor or colors.foreground },
-    CursorLine = { bg = colors.color8 or colors.background },
-    LineNr = { fg = colors.color8 or colors.color7 },
-    CursorLineNr = { fg = colors.foreground, bold = true },
+    CursorLine = { bg = cursor_line_bg },
+    CursorColumn = { bg = cursor_line_bg },
+    LineNr = { fg = colors.color8 or colors.color7, bg = M.config.transparent and 'NONE' or colors.background },
+    CursorLineNr = { fg = colors.foreground, bg = cursor_line_bg, bold = true },
+    SignColumn = { fg = colors.color8, bg = M.config.transparent and 'NONE' or colors.background },
     Visual = { bg = colors.selection_background or colors.color8 },
     VisualNOS = { bg = colors.selection_background or colors.color8 },
     Search = { fg = colors.background, bg = colors.color3 },
     IncSearch = { fg = colors.background, bg = colors.color11 },
+    
+    -- Window and UI elements
+    StatusLine = { fg = colors.foreground, bg = colors.color0 or colors.background },
+    StatusLineNC = { fg = colors.color8, bg = colors.color0 or colors.background },
+    TabLine = { fg = colors.color8, bg = colors.color0 or colors.background },
+    TabLineFill = { bg = colors.color0 or colors.background },
+    TabLineSel = { fg = colors.foreground, bg = colors.background },
+    WinSeparator = { fg = colors.color8 },
+    VertSplit = { fg = colors.color8 },
+    
+    -- Popup menu
+    Pmenu = { fg = colors.foreground, bg = colors.color0 or colors.background },
+    PmenuSel = { fg = colors.background, bg = colors.color6 },
+    PmenuSbar = { bg = colors.color8 },
+    PmenuThumb = { bg = colors.foreground },
     
     -- Syntax highlighting
     Comment = { fg = colors.color8, italic = true },
@@ -166,12 +194,31 @@ function M.load(theme_name)
     DiagnosticWarn = { fg = colors.color11 or colors.color3 },
     DiagnosticInfo = { fg = colors.color12 or colors.color4 },
     DiagnosticHint = { fg = colors.color14 or colors.color6 },
+    
+    -- Additional important groups for proper background
+    EndOfBuffer = { fg = M.config.ending_tildes and (colors.color8 or colors.color7) or bg_color, bg = bg_color },
+    NonText = { fg = colors.color8 or colors.color7, bg = bg_color },
+    Whitespace = { fg = colors.color8 or colors.color7 },
+    SpecialKey = { fg = colors.color8 or colors.color7 },
+    
+    -- Floating windows
+    FloatBorder = { fg = colors.color8, bg = M.config.transparent and 'NONE' or colors.background },
+    NormalFloat = { fg = colors.foreground, bg = M.config.transparent and 'NONE' or colors.background },
+    
+    -- Telescope (if present)
+    TelescopeNormal = { fg = colors.foreground, bg = M.config.transparent and 'NONE' or colors.background },
+    TelescopeBorder = { fg = colors.color8, bg = M.config.transparent and 'NONE' or colors.background },
   }
   
   -- Apply highlights
   for group, opts in pairs(highlights) do
     vim.api.nvim_set_hl(0, group, opts)
   end
+  
+  -- Force a redraw to ensure the background takes effect
+  vim.schedule(function()
+    vim.cmd('redraw!')
+  end)
 end
 
 -- Get themes
