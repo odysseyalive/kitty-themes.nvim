@@ -213,6 +213,13 @@ function M.setup_commands()
     desc = 'List all available kitty themes'
   })
   
+  -- Preview themes
+  vim.api.nvim_create_user_command('KittyThemesPreview', function()
+    M.preview_themes()
+  end, {
+    desc = 'Preview themes interactively'
+  })
+  
   -- Random theme
   vim.api.nvim_create_user_command('KittyThemesRandom', function()
     M.random_theme()
@@ -273,6 +280,78 @@ function M.random_theme()
   
   M.load(theme)
   vim.notify('Random theme loaded: ' .. theme)
+end
+
+-- Preview themes with quick switching
+function M.preview_themes()
+  local themes = M.get_themes()
+  local original_theme = vim.g.colors_name
+  local current_index = 1
+  
+  if #themes == 0 then
+    vim.notify('No kitty themes found', vim.log.levels.ERROR)
+    return
+  end
+  
+  -- Find current theme index
+  for i, theme in ipairs(themes) do
+    if theme == original_theme then
+      current_index = i
+      break
+    end
+  end
+  
+  local function load_theme_at_index(index)
+    if index >= 1 and index <= #themes then
+      current_index = index
+      M.load(themes[current_index])
+      return themes[current_index]
+    end
+  end
+  
+  local function show_preview_ui()
+    local current_theme = themes[current_index]
+    vim.notify(string.format('Theme %d/%d: %s (← → to navigate, Enter to confirm, Esc to cancel)', 
+      current_index, #themes, current_theme), vim.log.levels.INFO)
+  end
+  
+  local function cleanup_preview_keys()
+    pcall(vim.keymap.del, 'n', '<Right>')
+    pcall(vim.keymap.del, 'n', '<Left>')
+    pcall(vim.keymap.del, 'n', '<CR>')
+    pcall(vim.keymap.del, 'n', '<Esc>')
+  end
+  
+  -- Set up temporary keymaps
+  local function setup_preview_keys()
+    local opts = { silent = true, noremap = true }
+    
+    vim.keymap.set('n', '<Right>', function()
+      local theme = load_theme_at_index(current_index + 1)
+      if theme then show_preview_ui() end
+    end, opts)
+    
+    vim.keymap.set('n', '<Left>', function()
+      local theme = load_theme_at_index(current_index - 1)
+      if theme then show_preview_ui() end
+    end, opts)
+    
+    vim.keymap.set('n', '<CR>', function()
+      vim.notify('Theme selected: ' .. themes[current_index])
+      cleanup_preview_keys()
+    end, opts)
+    
+    vim.keymap.set('n', '<Esc>', function()
+      if original_theme then
+        vim.cmd('colorscheme ' .. original_theme)
+      end
+      vim.notify('Preview cancelled')
+      cleanup_preview_keys()
+    end, opts)
+  end
+  
+  setup_preview_keys()
+  show_preview_ui()
 end
 
 M.parse_kitty_theme = parse_kitty_theme
