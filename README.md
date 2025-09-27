@@ -89,7 +89,7 @@ require("kitty-themes").setup({
   -- Style variations for supported themes
   style = "darker", -- darker, dark, cool, deep, warm, warmer, light
   
-  -- Enable transparent background
+  -- Enable transparent background (works with all methods)
   transparent = false,
   
   -- Enable terminal colors
@@ -102,26 +102,45 @@ require("kitty-themes").setup({
 
 ### Transparency
 
-The plugin supports transparent backgrounds in two ways:
+The plugin provides unified transparent background support that works seamlessly with both Lua API and traditional `:colorscheme` commands.
 
-1. **Lua API**: When using `require("kitty-themes").load("ThemeName")`, the transparency setting from `setup()` is respected automatically.
-
-2. **Vim colorschemes**: When using `:colorscheme ThemeName`, you need to set the global variable first:
-   ```lua
-   vim.g.kitty_themes_transparent = 1  -- Enable transparency
-   vim.g.kitty_themes_transparent = 0  -- Disable transparency (default)
-   ```
-
-**Example usage:**
+**Basic Setup:**
 ```lua
--- For transparent backgrounds with traditional colorscheme command
-vim.g.kitty_themes_transparent = 1
-vim.cmd('colorscheme Dracula')
-
--- Or use the Lua API which respects the setup configuration
-require("kitty-themes").setup({transparent = true})
-require("kitty-themes").load("Dracula")
+require("kitty-themes").setup({
+  transparent = true,  -- Enable transparent backgrounds
+  term_colors = true,
+})
 ```
+
+**Usage Examples:**
+```lua
+-- Method 1: Using Lua API (recommended)
+require("kitty-themes").load("Dracula")
+
+-- Method 2: Traditional colorscheme command (also works!)
+vim.cmd('colorscheme Dracula')
+```
+
+**Runtime Control:**
+```lua
+-- Toggle transparency on/off
+require("kitty-themes").toggle_transparency()
+
+-- Set transparency programmatically
+require("kitty-themes").set_transparency(true)  -- or false
+
+-- Check current transparency status
+local is_transparent = require("kitty-themes").get_transparency_status()
+```
+
+**Commands:**
+- `:KittyThemesToggleTransparency` - Toggle transparency on/off
+- `:KittyThemesSetTransparency true/false` - Set transparency state
+
+**Notes:**
+- Transparency setting applies to all UI elements (statusline, popups, floating windows)
+- Works with popular plugin integrations (Telescope, nvim-tree, etc.)
+- Terminal emulator must support transparency (Kitty, Alacritty, WezTerm, etc.)
 
 ## Theme Selection
 
@@ -205,6 +224,56 @@ The plugin includes 381+ themes organized in categories:
 
 Use `:KittyThemesList` to see all available themes in a organized view.
 
+## API Reference
+
+### Core Functions
+
+```lua
+local kitty_themes = require("kitty-themes")
+
+-- Setup and configuration
+kitty_themes.setup({
+  transparent = false,
+  term_colors = true,
+  ending_tildes = false,
+})
+
+-- Theme management
+kitty_themes.load("Dracula")           -- Load specific theme
+kitty_themes.get_themes()              -- Get list of available themes
+kitty_themes.random_theme()            -- Load random theme
+
+-- Interactive selection
+kitty_themes.select_theme()            -- Open theme selector
+kitty_themes.list_themes()             -- Print all themes
+kitty_themes.preview_themes()          -- Interactive preview mode
+```
+
+### Transparency Functions
+
+```lua
+-- Runtime transparency control
+kitty_themes.toggle_transparency()              -- Toggle on/off
+kitty_themes.set_transparency(true)             -- Set state
+kitty_themes.get_transparency_status()          -- Get current state
+
+-- Advanced transparency (from transparency module)
+local transparency = require("kitty-themes.transparency")
+transparency.supports_transparency()            -- Check terminal support
+transparency.get_debug_info()                  -- Get debug information
+```
+
+### User Commands
+
+| Command | Description |
+|---------|-------------|
+| `:KittyThemes [theme]` | Load theme or open selector |
+| `:KittyThemesList` | List all available themes |
+| `:KittyThemesPreview` | Interactive theme preview |
+| `:KittyThemesRandom` | Load random theme |
+| `:KittyThemesToggleTransparency` | Toggle transparency |
+| `:KittyThemesSetTransparency <on/off>` | Set transparency |
+
 ## Development
 
 ### Updating Themes
@@ -254,6 +323,43 @@ kitty-themes.nvim/
 ├── build.py             # Python build script
 └── build.sh             # Development build script
 ```
+
+## Troubleshooting
+
+### Transparency Issues
+
+**Transparency not working:**
+1. **Check terminal support**: Ensure your terminal emulator supports transparency (Kitty, Alacritty, WezTerm, etc.)
+2. **Verify setup**: Make sure transparency is enabled in your configuration:
+   ```lua
+   require("kitty-themes").setup({ transparent = true })
+   ```
+3. **Check terminal settings**: Verify your terminal has transparency/background opacity configured
+4. **Debug transparency state**:
+   ```lua
+   -- Check current transparency status
+   print(require("kitty-themes").get_transparency_status())
+   ```
+
+**Theme switching issues:**
+1. **Use recommended method**: `require("kitty-themes").load("ThemeName")`
+2. **For `:colorscheme` command**: The plugin automatically syncs transparency settings
+3. **Manual refresh**: If needed, toggle transparency to refresh: `:KittyThemesToggleTransparency` (twice)
+
+**Common terminal configurations:**
+- **Kitty**: Set `background_opacity` in `kitty.conf`
+- **Alacritty**: Set `background_opacity` in `alacritty.yml`
+- **WezTerm**: Set `window_background_opacity` in config
+
+### General Issues
+
+**Theme not found:**
+- Run `:KittyThemesList` to see available themes
+- Check spelling of theme name (case-sensitive)
+
+**Colors not displaying correctly:**
+- Ensure `termguicolors` is enabled: `vim.o.termguicolors = true`
+- Check terminal color support (24-bit/true color)
 
 ## Contributing
 

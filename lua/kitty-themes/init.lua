@@ -2,6 +2,8 @@ local M = {}
 
 -- Load embedded theme data
 local embedded = require('kitty-themes.embedded')
+-- Load transparency management module
+local transparency = require('kitty-themes.transparency')
 
 -- Configuration defaults
 M.config = {
@@ -14,10 +16,11 @@ M.config = {
 
 -- Setup function to apply configuration
 function M.setup(opts)
+  local old_config = vim.deepcopy(M.config)
   M.config = vim.tbl_deep_extend('force', M.config, opts or {})
   
-  -- Set global variable for vim colorschemes to respect transparency
-  vim.g.kitty_themes_transparent = M.config.transparent and 1 or 0
+  -- Initialize or update transparency system with new config
+  transparency.update_from_config(M.config)
   
   -- Setup commands directly to avoid circular dependency
   M.setup_commands()
@@ -89,8 +92,8 @@ function M.load(theme_name)
   end
   
   -- Apply comprehensive highlights
-  local bg_color = M.config.transparent and 'NONE' or colors.background
-  local cursor_line_bg = M.config.transparent and 'NONE' or (colors.selection_background or colors.color0 or colors.background)
+  local bg_color = transparency.get_background_color(colors.background)
+  local cursor_line_bg = transparency.get_cursor_line_background(colors)
   
   local highlights = {
     -- Editor highlights
@@ -99,25 +102,25 @@ function M.load(theme_name)
     Cursor = { fg = colors.background, bg = colors.cursor or colors.foreground },
     CursorLine = { bg = cursor_line_bg },
     CursorColumn = { bg = cursor_line_bg },
-    LineNr = { fg = colors.color8 or colors.color7, bg = M.config.transparent and 'NONE' or colors.background },
+    LineNr = { fg = colors.color8 or colors.color7, bg = transparency.get_background_color(colors.background) },
     CursorLineNr = { fg = colors.foreground, bg = cursor_line_bg, bold = true },
-    SignColumn = { fg = colors.color8, bg = M.config.transparent and 'NONE' or colors.background },
+    SignColumn = { fg = colors.color8, bg = transparency.get_background_color(colors.background) },
     Visual = { bg = colors.selection_background or colors.color8 },
     VisualNOS = { bg = colors.selection_background or colors.color8 },
     Search = { fg = colors.background, bg = colors.color3 },
     IncSearch = { fg = colors.background, bg = colors.color11 },
     
     -- Window and UI elements
-    StatusLine = { fg = colors.foreground, bg = M.config.transparent and 'NONE' or (colors.color0 or colors.background) },
-    StatusLineNC = { fg = colors.color8, bg = M.config.transparent and 'NONE' or (colors.color0 or colors.background) },
-    TabLine = { fg = colors.color8, bg = M.config.transparent and 'NONE' or (colors.color0 or colors.background) },
-    TabLineFill = { bg = M.config.transparent and 'NONE' or (colors.color0 or colors.background) },
-    TabLineSel = { fg = colors.foreground, bg = M.config.transparent and 'NONE' or colors.background },
+    StatusLine = { fg = colors.foreground, bg = transparency.get_ui_background_color(colors) },
+    StatusLineNC = { fg = colors.color8, bg = transparency.get_ui_background_color(colors) },
+    TabLine = { fg = colors.color8, bg = transparency.get_ui_background_color(colors) },
+    TabLineFill = { bg = transparency.get_ui_background_color(colors) },
+    TabLineSel = { fg = colors.foreground, bg = transparency.get_background_color(colors.background) },
     WinSeparator = { fg = colors.color8 },
     VertSplit = { fg = colors.color8 },
     
     -- Popup menu
-    Pmenu = { fg = colors.foreground, bg = M.config.transparent and 'NONE' or (colors.color0 or colors.background) },
+    Pmenu = { fg = colors.foreground, bg = transparency.get_ui_background_color(colors) },
     PmenuSel = { fg = colors.background, bg = colors.color6 },
     PmenuSbar = { bg = colors.color8 },
     PmenuThumb = { bg = colors.foreground },
@@ -184,12 +187,31 @@ function M.load(theme_name)
     SpecialKey = { fg = colors.color8 or colors.color7 },
     
     -- Floating windows
-    FloatBorder = { fg = colors.color8, bg = M.config.transparent and 'NONE' or colors.background },
-    NormalFloat = { fg = colors.foreground, bg = M.config.transparent and 'NONE' or colors.background },
+    FloatBorder = { fg = colors.color8, bg = transparency.get_background_color(colors.background) },
+    NormalFloat = { fg = colors.foreground, bg = transparency.get_background_color(colors.background) },
     
     -- Telescope (if present)
-    TelescopeNormal = { fg = colors.foreground, bg = M.config.transparent and 'NONE' or colors.background },
-    TelescopeBorder = { fg = colors.color8, bg = M.config.transparent and 'NONE' or colors.background },
+    TelescopeNormal = { fg = colors.foreground, bg = transparency.get_background_color(colors.background) },
+    TelescopeBorder = { fg = colors.color8, bg = transparency.get_background_color(colors.background) },
+    
+    -- Additional popup and floating window support
+    NvimTreeNormal = { fg = colors.foreground, bg = transparency.get_background_color(colors.background) },
+    NvimTreeNormalNC = { fg = colors.foreground, bg = transparency.get_background_color(colors.background) },
+    NeoTreeNormal = { fg = colors.foreground, bg = transparency.get_background_color(colors.background) },
+    NeoTreeNormalNC = { fg = colors.foreground, bg = transparency.get_background_color(colors.background) },
+    
+    -- Completion menu enhancements
+    PmenuSel = { fg = colors.background, bg = colors.color6 },
+    PmenuKind = { fg = colors.color12 or colors.color4, bg = transparency.get_ui_background_color(colors) },
+    PmenuKindSel = { fg = colors.background, bg = colors.color6 },
+    PmenuExtra = { fg = colors.color8, bg = transparency.get_ui_background_color(colors) },
+    PmenuExtraSel = { fg = colors.background, bg = colors.color6 },
+    
+    -- Modern LSP and diagnostic floating windows
+    DiagnosticFloatingError = { fg = colors.color9 or colors.color1, bg = transparency.get_background_color(colors.background) },
+    DiagnosticFloatingWarn = { fg = colors.color11 or colors.color3, bg = transparency.get_background_color(colors.background) },
+    DiagnosticFloatingInfo = { fg = colors.color12 or colors.color4, bg = transparency.get_background_color(colors.background) },
+    DiagnosticFloatingHint = { fg = colors.color14 or colors.color6, bg = transparency.get_background_color(colors.background) },
   }
   
   -- Apply highlights
@@ -244,6 +266,25 @@ function M.setup_commands()
     M.random_theme()
   end, {
     desc = 'Load a random kitty theme'
+  })
+  
+  -- Transparency toggle
+  vim.api.nvim_create_user_command('KittyThemesToggleTransparency', function()
+    M.toggle_transparency()
+  end, {
+    desc = 'Toggle transparency on/off'
+  })
+  
+  -- Set transparency
+  vim.api.nvim_create_user_command('KittyThemesSetTransparency', function(opts)
+    local enabled = opts.args == 'true' or opts.args == '1' or opts.args == 'on'
+    M.set_transparency(enabled)
+  end, {
+    nargs = 1,
+    complete = function()
+      return {'true', 'false', 'on', 'off', '1', '0'}
+    end,
+    desc = 'Set transparency on/off'
   })
 end
 
@@ -374,5 +415,21 @@ function M.preview_themes()
 end
 
 M.parse_kitty_theme = parse_kitty_theme
+
+-- Transparency management functions (Task 3.1)
+function M.toggle_transparency()
+  local new_state = transparency.toggle()
+  vim.notify('Transparency ' .. (new_state and 'enabled' or 'disabled'))
+  return new_state
+end
+
+function M.set_transparency(enabled)
+  transparency.set_enabled(enabled)
+  vim.notify('Transparency ' .. (enabled and 'enabled' or 'disabled'))
+end
+
+function M.get_transparency_status()
+  return transparency.is_enabled()
+end
 
 return M
