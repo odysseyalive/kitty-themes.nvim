@@ -4,7 +4,7 @@ A comprehensive Neovim colorscheme plugin that brings all the beautiful [kitty t
 
 ## Features
 
-- 🎨 **169 Beautiful Themes**: All themes from the official kitty-themes collection
+- 🎨 **381+ Beautiful Themes**: All themes from the official kitty-themes collection
 - 🎛️ **Interactive Selection**: Easy theme switching with preview functionality
 - ⚡ **Performance**: Fast loading with embedded theme data
 - 🔧 **Configurable**: Extensive customization options
@@ -159,24 +159,51 @@ Feeling adventurous?
 
 ## Popular Themes to Try
 
-- **Dark themes**: `Dracula`, `OneDark`, `gruvbox_dark`, `Monokai`
+- **Dark themes**: `Dracula`, `OneDark`, `Nord`, `Nordfox`, `gruvbox_dark`, `Monokai`
 - **Light themes**: `Github`, `AtomOneLight`, `gruvbox_light`, `PencilLight`  
 - **Material themes**: `Material`, `MaterialDark`, `OceanicMaterial`
+- **Catppuccin variants**: `Catppuccin-Mocha`, `Catppuccin-Frappe`, `Catppuccin-Macchiato`, `Catppuccin-Latte`
+- **Tokyo Night variants**: `tokyo_night_night`, `tokyo_night_storm`, `tokyo_night_day`, `tokyo_night_moon`
+- **Rose Pine variants**: `rose-pine`, `rose-pine-moon`, `rose-pine-dawn`
 - **Unique themes**: `Batman`, `Cyberpunk`, `Galaxy`, `Neon`
 
 ## Available Themes
 
-The plugin includes 169 themes organized in categories:
+The plugin includes 381+ themes organized in categories:
 
 - **Light Themes**: Github, AtomOneLight, PencilLight, etc.
-- **Dark Themes**: Dracula, OneDark, Monokai, etc.  
+- **Dark Themes**: Dracula, OneDark, Monokai, Nord, Nordfox, etc.  
 - **Material Themes**: Material, MaterialDark, OceanicMaterial, etc.
-- **Gruvbox**: gruvbox_dark, gruvbox_light
-- **And many more...**
+- **Gruvbox**: gruvbox_dark, gruvbox_light, gruvbox-material variants
+- **Catppuccin**: All four variants (Latte, Frappe, Macchiato, Mocha)
+- **Tokyo Night**: Multiple variants (Day, Night, Moon, Storm)
+- **Rose Pine**: All variants (Rose Pine, Dawn, Moon)
+- **Popular themes**: Nord, Catppuccin, Tokyo Night, Rose Pine, and many more...
 
 Use `:KittyThemesList` to see all available themes in a organized view.
 
 ## Development
+
+### Updating Themes
+
+To keep your themes up-to-date with the latest from the upstream kitty-themes repository:
+
+```bash
+# Check for missing themes
+./update_themes.sh --check
+
+# Download missing themes
+./update_themes.sh
+
+# Force update all themes (overwrite existing)
+./update_themes.sh --force
+```
+
+The update script will:
+1. Fetch the list of themes from the upstream kitty-themes repository
+2. Compare with local themes to find missing ones
+3. Download missing themes
+4. Regenerate all colorscheme files
 
 ### Building from Source
 
