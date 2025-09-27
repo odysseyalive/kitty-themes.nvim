@@ -48,8 +48,8 @@ endfunction
 call s:hi('Normal', s:fg, s:bg, s:none)
 call s:hi('NormalFloat', s:fg, s:bg, s:none)
 call s:hi('Cursor', s:bg_solid, s:cursor, s:none)
-call s:hi('CursorLine', s:none, s:color8, s:none)
-call s:hi('CursorColumn', s:none, s:color8, s:none)
+call s:hi('CursorLine', s:none, s:color0, s:none)
+call s:hi('CursorColumn', s:none, s:color0, s:none)
 call s:hi('LineNr', s:color8, s:none, s:none)
 call s:hi('CursorLineNr', s:fg, s:none, 'bold')
 call s:hi('Visual', s:none, s:selection, s:none)
@@ -58,7 +58,7 @@ call s:hi('Search', s:bg_solid, s:color3, s:none)
 call s:hi('IncSearch', s:bg_solid, s:color11, s:none)
 
 " Syntax highlighting
-call s:hi('Comment', s:color8, s:none, 'italic')
+call s:hi('Comment', s:color0, s:none, 'italic')
 call s:hi('Constant', s:color12, s:none, s:none)
 call s:hi('String', s:color2, s:none, s:none)
 call s:hi('Character', s:color2, s:none, s:none)
@@ -87,7 +87,7 @@ call s:hi('Special', s:color14, s:none, s:none)
 call s:hi('SpecialChar', s:color9, s:none, s:none)
 call s:hi('Tag', s:color9, s:none, s:none)
 call s:hi('Delimiter', s:fg, s:none, s:none)
-call s:hi('SpecialComment', s:color8, s:none, 'italic')
+call s:hi('SpecialComment', s:color0, s:none, 'italic')
 call s:hi('Debug', s:color9, s:none, s:none)
 
 " Error and warning
