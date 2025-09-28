@@ -4,7 +4,7 @@ A comprehensive Neovim colorscheme plugin that brings all the beautiful [kitty t
 
 ## Features
 
-- 🎨 **381+ Beautiful Themes**: All themes from the official kitty-themes collection
+- 🎨 **170+ Beautiful Themes**: All themes from the official kitty-themes collection
 - 🎛️ **Interactive Selection**: Easy theme switching with preview functionality
 - ⚡ **Performance**: Fast loading with embedded theme data
 - 🔧 **Configurable**: Extensive customization options
@@ -105,6 +105,7 @@ require("kitty-themes").setup({
 The plugin provides unified transparent background support that works seamlessly with both Lua API and traditional `:colorscheme` commands.
 
 **Basic Setup:**
+
 ```lua
 require("kitty-themes").setup({
   transparent = true,  -- Enable transparent backgrounds
@@ -113,6 +114,7 @@ require("kitty-themes").setup({
 ```
 
 **Usage Examples:**
+
 ```lua
 -- Method 1: Using Lua API (recommended)
 require("kitty-themes").load("Dracula")
@@ -122,6 +124,7 @@ vim.cmd('colorscheme Dracula')
 ```
 
 **Runtime Control:**
+
 ```lua
 -- Toggle transparency on/off
 require("kitty-themes").toggle_transparency()
@@ -134,10 +137,12 @@ local is_transparent = require("kitty-themes").get_transparency_status()
 ```
 
 **Commands:**
+
 - `:KittyThemesToggleTransparency` - Toggle transparency on/off
 - `:KittyThemesSetTransparency true/false` - Set transparency state
 
 **Notes:**
+
 - Transparency setting applies to all UI elements (statusline, popups, floating windows)
 - Works with popular plugin integrations (Telescope, nvim-tree, etc.)
 - Terminal emulator must support transparency (Kitty, Alacritty, WezTerm, etc.)
@@ -292,6 +297,7 @@ To keep your themes up-to-date with the latest from the upstream kitty-themes re
 ```
 
 The update script will:
+
 1. Fetch the list of themes from the upstream kitty-themes repository
 2. Compare with local themes to find missing ones
 3. Download missing themes
@@ -329,24 +335,30 @@ kitty-themes.nvim/
 ### Transparency Issues
 
 **Transparency not working:**
+
 1. **Check terminal support**: Ensure your terminal emulator supports transparency (Kitty, Alacritty, WezTerm, etc.)
 2. **Verify setup**: Make sure transparency is enabled in your configuration:
+
    ```lua
    require("kitty-themes").setup({ transparent = true })
    ```
+
 3. **Check terminal settings**: Verify your terminal has transparency/background opacity configured
 4. **Debug transparency state**:
+
    ```lua
    -- Check current transparency status
    print(require("kitty-themes").get_transparency_status())
    ```
 
 **Theme switching issues:**
+
 1. **Use recommended method**: `require("kitty-themes").load("ThemeName")`
 2. **For `:colorscheme` command**: The plugin automatically syncs transparency settings
 3. **Manual refresh**: If needed, toggle transparency to refresh: `:KittyThemesToggleTransparency` (twice)
 
 **Common terminal configurations:**
+
 - **Kitty**: Set `background_opacity` in `kitty.conf`
 - **Alacritty**: Set `background_opacity` in `alacritty.yml`
 - **WezTerm**: Set `window_background_opacity` in config
@@ -354,10 +366,12 @@ kitty-themes.nvim/
 ### General Issues
 
 **Theme not found:**
+
 - Run `:KittyThemesList` to see available themes
 - Check spelling of theme name (case-sensitive)
 
 **Colors not displaying correctly:**
+
 - Ensure `termguicolors` is enabled: `vim.o.termguicolors = true`
 - Check terminal color support (24-bit/true color)
 
