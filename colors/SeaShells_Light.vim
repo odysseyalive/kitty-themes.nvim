@@ -8,14 +8,14 @@ let g:colors_name = 'SeaShells_Light'
 set termguicolors
 " Define colors
 let s:none = 'NONE'
-let s:bg_solid = '#fef9f2'
+let s:bg_solid = '#ebe1d3'
 let s:bg = get(g:, 'kitty_themes_transparent', 0) ? s:none : s:bg_solid
 let s:fg = '#2d3339'
 let s:cursor = '#d05023'
-let s:selection = '#e6f3fa'
+let s:selection = '#d8eaf5'
 
 " Terminal colors - Light version with maintained color relationships
-let s:color0 = '#ffffff'
+let s:color0 = '#f5efe7'
 let s:color1 = '#d05023'
 let s:color2 = '#027b9b'
 let s:color3 = '#b8751f'
