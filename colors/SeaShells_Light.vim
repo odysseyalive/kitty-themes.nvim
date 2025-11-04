@@ -14,23 +14,24 @@ let s:fg = '#0f2838'
 let s:cursor = '#d05023'
 let s:selection = '#c8dde8'
 
-" Terminal colors - Adapted from SeaShells dark theme for light background
-let s:color0 = '#f5efe7'
-let s:color1 = '#d05023'
-let s:color2 = '#027b9b'
-let s:color3 = '#d88821'
-let s:color4 = '#2d6870'
-let s:color5 = '#68d3f0'
-let s:color6 = '#50a3b5'
-let s:color7 = '#0f2838'
-let s:color8 = '#5a6b75'
-let s:color9 = '#d38677'
-let s:color10 = '#618c98'
-let s:color11 = '#fba02f'
-let s:color12 = '#1abcdd'
-let s:color13 = '#2d6870'
-let s:color14 = '#4a7a85'
-let s:color15 = '#08131a'
+" Terminal colors - Complementary ocean/beach palette with proper contrast
+" Color wheel: Background at 33° (warm sand), blues at 210-220° (complementary)
+let s:color0 = '#b8a796'    " Medium taupe (was too light) - 30% darker than bg
+let s:color1 = '#d05023'    " Coral red (warm accent) - kept
+let s:color2 = '#027b9b'    " Ocean blue (complementary) - kept
+let s:color3 = '#d88821'    " Amber/gold (analogous warm) - kept
+let s:color4 = '#2d6870'    " Deep teal (complementary) - kept
+let s:color5 = '#0f7b8a'    " Darker cyan (was too light) - complementary
+let s:color6 = '#50a3b5'    " Sky blue (complementary) - kept
+let s:color7 = '#0f2838'    " Deep ocean (complementary dark) - kept
+let s:color8 = '#4a5a65'    " Slate blue-gray (slightly darker) - cooler neutral
+let s:color9 = '#d38677'    " Soft coral (warm accent) - kept
+let s:color10 = '#618c98'   " Steel blue (complementary) - kept
+let s:color11 = '#c57a1a'   " Rich amber (slightly darker) - warm accent
+let s:color12 = '#0e8fb5'   " Medium cyan (was too bright) - complementary
+let s:color13 = '#2d6870'   " Deep teal (complementary) - kept
+let s:color14 = '#3a6a75'   " Ocean teal (slightly darker) - complementary
+let s:color15 = '#08131a'   " Deepest ocean - kept
 
 " Helper function for setting highlights
 function! s:hi(group, guifg, guibg, attr)
