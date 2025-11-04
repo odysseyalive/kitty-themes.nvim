@@ -10,26 +10,26 @@ set termguicolors
 let s:none = 'NONE'
 let s:bg_solid = '#ebe1d3'
 let s:bg = get(g:, 'kitty_themes_transparent', 0) ? s:none : s:bg_solid
-let s:fg = '#2d3339'
+let s:fg = '#0f2838'
 let s:cursor = '#d05023'
-let s:selection = '#d8eaf5'
+let s:selection = '#c8dde8'
 
-" Terminal colors - Light version with maintained color relationships
-let s:color0 = '#f5efe7'
+" Terminal colors - Adapted from SeaShells dark theme for light background
+let s:color0 = '#0f2838'
 let s:color1 = '#d05023'
 let s:color2 = '#027b9b'
-let s:color3 = '#b8751f'
-let s:color4 = '#1d4850'
-let s:color5 = '#4a9fb5'
+let s:color3 = '#d88821'
+let s:color4 = '#2d6870'
+let s:color5 = '#68d3f0'
 let s:color6 = '#50a3b5'
-let s:color7 = '#2d3339'
-let s:color8 = '#8a9ba8'
-let s:color9 = '#e8755a'
-let s:color10 = '#4a8c98'
-let s:color11 = '#d6983a'
+let s:color7 = '#635547'
+let s:color8 = '#7d8891'
+let s:color9 = '#d38677'
+let s:color10 = '#618c98'
+let s:color11 = '#fba02f'
 let s:color12 = '#1abcdd'
-let s:color13 = '#6bb3c4'
-let s:color14 = '#68a6b3'
+let s:color13 = '#4a9fb5'
+let s:color14 = '#86abb3'
 let s:color15 = '#08131a'
 
 " Helper function for setting highlights
@@ -52,25 +52,25 @@ function! s:hi(group, guifg, guibg, attr)
 endfunction
 
 call s:hi('StatusLine', s:fg, s:color8, 'bold')
-call s:hi('StatusLineNC', s:color8, '#f0f4f7', 'NONE')
+call s:hi('StatusLineNC', s:color8, s:color0, 'NONE')
 call s:hi('StatusLineTerm', s:fg, s:color8, 'bold')
-call s:hi('StatusLineTermNC', s:color8, '#f0f4f7', 'NONE')
-call s:hi('TabLine', s:color7, '#f0f4f7', 'NONE')
-call s:hi('TabLineFill', s:color8, '#f0f4f7', 'NONE')
+call s:hi('StatusLineTermNC', s:color8, s:color0, 'NONE')
+call s:hi('TabLine', s:color7, s:color0, 'NONE')
+call s:hi('TabLineFill', s:color8, s:color0, 'NONE')
 call s:hi('TabLineSel', s:bg_solid, s:color4, 'bold')
-call s:hi('Pmenu', s:fg, '#f0f4f7', 'NONE')
-call s:hi('PmenuSel', s:color0, s:color4, 'bold')
-call s:hi('PmenuSbar', s:none, '#e0e8ed', 'NONE')
-call s:hi('PmenuThumb', s:none, s:color8, 'NONE')
+call s:hi('Pmenu', s:fg, s:color8, 'NONE')
+call s:hi('PmenuSel', s:bg_solid, s:color4, 'bold')
+call s:hi('PmenuSbar', s:none, s:color8, 'NONE')
+call s:hi('PmenuThumb', s:none, s:color7, 'NONE')
 call s:hi('WinSeparator', s:color8, s:none, 'NONE')
 call s:hi('VertSplit', s:color8, s:none, 'NONE')
 call s:hi('EndOfBuffer', s:color8, s:none, 'NONE')
-call s:hi('ColorColumn', s:none, '#f0f4f7', 'NONE')
+call s:hi('ColorColumn', s:none, s:color0, 'NONE')
 call s:hi('SignColumn', s:color8, s:none, 'NONE')
 call s:hi('FoldColumn', s:color8, s:none, 'NONE')
-call s:hi('Folded', s:color8, '#f0f4f7', 'italic')
-call s:hi('CurSearch', s:color0, s:color3, 'bold')
-call s:hi('Substitute', s:color0, s:color5, 'bold')
+call s:hi('Folded', s:color8, s:color0, 'italic')
+call s:hi('CurSearch', s:bg_solid, s:color3, 'bold')
+call s:hi('Substitute', s:bg_solid, s:color5, 'bold')
 call s:hi('MoreMsg', s:color2, s:none, 'bold')
 call s:hi('ModeMsg', s:color4, s:none, 'bold')
 call s:hi('Question', s:color3, s:none, 'bold')
@@ -82,7 +82,7 @@ call s:hi('SpellCap', s:color3, s:none, 'underline')
 call s:hi('SpellLocal', s:color6, s:none, 'underline')
 call s:hi('SpellRare', s:color5, s:none, 'underline')
 call s:hi('DiagnosticUnderlineError', s:none, s:none, 'underline sp=#d05023')
-call s:hi('DiagnosticUnderlineWarn', s:none, s:none, 'underline sp=#b8751f')
+call s:hi('DiagnosticUnderlineWarn', s:none, s:none, 'underline sp=#fba02f')
 call s:hi('DiagnosticUnderlineInfo', s:none, s:none, 'underline sp=#1d4850')
 call s:hi('DiagnosticUnderlineHint', s:none, s:none, 'underline sp=#50a3b5')
 call s:hi('GitSignsTopdelete', s:color1, s:none, 'NONE')
@@ -90,26 +90,26 @@ call s:hi('GitSignsChangedelete', s:color5, s:none, 'NONE')
 call s:hi('GitSignsUntracked', s:color8, s:none, 'NONE')
 call s:hi('FloatBorder', s:color8, s:none, 'NONE')
 call s:hi('FloatTitle', s:color4, s:none, 'bold')
-call s:hi('QuickFixLine', s:none, '#f0f4f7', 'NONE')
+call s:hi('QuickFixLine', s:none, s:color0, 'NONE')
 call s:hi('qfLineNr', s:color3, s:none, 'NONE')
 call s:hi('qfFileName', s:color4, s:none, 'NONE')
-call s:hi('markdownCode', s:color6, '#f0f4f7', 'NONE')
-call s:hi('markdownCodeBlock', s:color6, '#f0f4f7', 'NONE')
+call s:hi('markdownCode', s:color6, s:color0, 'NONE')
+call s:hi('markdownCodeBlock', s:color6, s:color0, 'NONE')
 call s:hi('markdownCodeDelimiter', s:color8, s:none, 'NONE')
-call s:hi('@text.literal.markdown', s:color6, '#f0f4f7', 'NONE')
-call s:hi('@text.literal.block.markdown', s:color6, '#f0f4f7', 'NONE')
+call s:hi('@text.literal.markdown', s:color6, s:color0, 'NONE')
+call s:hi('@text.literal.block.markdown', s:color6, s:color0, 'NONE')
 call s:hi('Normal', s:fg, s:bg, s:none)
 call s:hi('NormalFloat', s:fg, s:bg, s:none)
 call s:hi('Cursor', s:bg_solid, s:cursor, s:none)
-call s:hi('CursorLine', s:none, '#f5f8fb', s:none)
-call s:hi('CursorColumn', s:none, '#f5f8fb', s:none)
+call s:hi('CursorLine', s:none, s:color0, s:none)
+call s:hi('CursorColumn', s:none, s:color0, s:none)
 call s:hi('LineNr', s:color8, s:none, s:none)
 call s:hi('CursorLineNr', s:fg, s:none, 'bold')
 call s:hi('Visual', s:none, s:selection, s:none)
 call s:hi('VisualNOS', s:none, s:selection, s:none)
-call s:hi('Search', s:color0, s:color11, s:none)
-call s:hi('IncSearch', s:color0, s:color3, s:none)
-call s:hi('Comment', '#9aa5b0', s:none, 'italic')
+call s:hi('Search', s:bg_solid, s:color3, s:none)
+call s:hi('IncSearch', s:bg_solid, s:color11, s:none)
+call s:hi('Comment', s:color4, s:none, 'italic')
 call s:hi('Constant', s:color12, s:none, s:none)
 call s:hi('String', s:color2, s:none, s:none)
 call s:hi('Character', s:color2, s:none, s:none)
@@ -118,13 +118,13 @@ call s:hi('Boolean', s:color13, s:none, s:none)
 call s:hi('Float', s:color13, s:none, s:none)
 call s:hi('Identifier', s:color14, s:none, s:none)
 call s:hi('Function', s:color12, s:none, s:none)
-call s:hi('Statement', s:color4, s:none, s:none)
-call s:hi('Conditional', s:color4, s:none, s:none)
-call s:hi('Repeat', s:color4, s:none, s:none)
-call s:hi('Label', s:color4, s:none, s:none)
-call s:hi('Operator', s:color4, s:none, s:none)
-call s:hi('Keyword', s:color4, s:none, s:none)
-call s:hi('Exception', s:color4, s:none, s:none)
+call s:hi('Statement', s:color13, s:none, s:none)
+call s:hi('Conditional', s:color13, s:none, s:none)
+call s:hi('Repeat', s:color13, s:none, s:none)
+call s:hi('Label', s:color13, s:none, s:none)
+call s:hi('Operator', s:color13, s:none, s:none)
+call s:hi('Keyword', s:color13, s:none, s:none)
+call s:hi('Exception', s:color13, s:none, s:none)
 call s:hi('PreProc', s:color3, s:none, s:none)
 call s:hi('Include', s:color3, s:none, s:none)
 call s:hi('Define', s:color3, s:none, s:none)
@@ -138,7 +138,7 @@ call s:hi('Special', s:color14, s:none, s:none)
 call s:hi('SpecialChar', s:color9, s:none, s:none)
 call s:hi('Tag', s:color9, s:none, s:none)
 call s:hi('Delimiter', s:fg, s:none, s:none)
-call s:hi('SpecialComment', '#9aa5b0', s:none, 'italic')
+call s:hi('SpecialComment', s:color4, s:none, 'italic')
 call s:hi('Debug', s:color9, s:none, s:none)
 call s:hi('Error', s:color9, s:none, s:none)
 call s:hi('ErrorMsg', s:color9, s:none, s:none)
