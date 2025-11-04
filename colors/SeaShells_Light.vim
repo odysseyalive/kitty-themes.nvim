@@ -23,13 +23,13 @@ let s:color4 = '#2d6870'
 let s:color5 = '#68d3f0'
 let s:color6 = '#50a3b5'
 let s:color7 = '#0f2838'
-let s:color8 = '#7d8891'
+let s:color8 = '#5a6b75'
 let s:color9 = '#d38677'
 let s:color10 = '#618c98'
 let s:color11 = '#fba02f'
 let s:color12 = '#1abcdd'
-let s:color13 = '#4a9fb5'
-let s:color14 = '#86abb3'
+let s:color13 = '#2d6870'
+let s:color14 = '#4a7a85'
 let s:color15 = '#08131a'
 
 " Helper function for setting highlights
@@ -68,7 +68,7 @@ call s:hi('EndOfBuffer', s:color8, s:none, 'NONE')
 call s:hi('ColorColumn', s:none, s:color0, 'NONE')
 call s:hi('SignColumn', s:color8, s:none, 'NONE')
 call s:hi('FoldColumn', s:color8, s:none, 'NONE')
-call s:hi('Folded', s:color8, s:color0, 'italic')
+call s:hi('Folded', s:color8, s:none, 'italic')
 call s:hi('CurSearch', s:bg_solid, s:color3, 'bold')
 call s:hi('Substitute', s:bg_solid, s:color5, 'bold')
 call s:hi('MoreMsg', s:color2, s:none, 'bold')
