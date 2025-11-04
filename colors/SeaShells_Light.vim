@@ -8,7 +8,7 @@ let g:colors_name = 'SeaShells_Light'
 set termguicolors
 " Define colors
 let s:none = 'NONE'
-let s:bg_solid = '#ebe1d3'
+let s:bg_solid = '#e0d6c8'
 let s:bg = get(g:, 'kitty_themes_transparent', 0) ? s:none : s:bg_solid
 let s:fg = '#0f2838'
 let s:cursor = '#d05023'
