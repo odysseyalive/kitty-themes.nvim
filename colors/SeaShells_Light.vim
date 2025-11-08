@@ -13,7 +13,8 @@ let s:bg = get(g:, 'kitty_themes_transparent', 0) ? s:none : s:bg_solid
 let s:fg = '#0f2838'
 let s:cursor = '#d05023'
 let s:selection = '#c8dde8'
-let s:ui_light = '#dcd4c8'    " Very light for status bar and highlights - barely darker than bg
+let s:ui_light = '#dcd4c8'    " Very light for status bar - barely darker than bg
+let s:cursorline = '#d2cabe'  " Slightly darker for cursor line - more visible
 
 " Terminal colors - Complementary ocean/beach palette with proper contrast
 " Color wheel: Background at 33° (warm sand), blues at 210-220° (complementary)
@@ -103,8 +104,8 @@ call s:hi('@text.literal.block.markdown', s:color6, s:color0, 'NONE')
 call s:hi('Normal', s:fg, s:bg, s:none)
 call s:hi('NormalFloat', s:fg, s:bg, s:none)
 call s:hi('Cursor', s:bg_solid, s:cursor, s:none)
-call s:hi('CursorLine', s:none, s:ui_light, s:none)
-call s:hi('CursorColumn', s:none, s:ui_light, s:none)
+call s:hi('CursorLine', s:none, s:cursorline, s:none)
+call s:hi('CursorColumn', s:none, s:cursorline, s:none)
 call s:hi('LineNr', s:color8, s:none, s:none)
 call s:hi('CursorLineNr', s:fg, s:none, 'bold')
 call s:hi('Visual', s:none, s:selection, s:none)
