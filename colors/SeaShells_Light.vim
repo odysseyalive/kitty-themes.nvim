@@ -52,10 +52,10 @@ function! s:hi(group, guifg, guibg, attr)
   endif
 endfunction
 
-call s:hi('StatusLine', s:fg, s:color8, 'bold')
-call s:hi('StatusLineNC', s:color8, s:color0, 'NONE')
-call s:hi('StatusLineTerm', s:fg, s:color8, 'bold')
-call s:hi('StatusLineTermNC', s:color8, s:color0, 'NONE')
+call s:hi('StatusLine', s:fg, s:color0, 'bold')
+call s:hi('StatusLineNC', s:color4, s:color0, 'NONE')
+call s:hi('StatusLineTerm', s:fg, s:color0, 'bold')
+call s:hi('StatusLineTermNC', s:color4, s:color0, 'NONE')
 call s:hi('TabLine', s:color7, s:color0, 'NONE')
 call s:hi('TabLineFill', s:color8, s:color0, 'NONE')
 call s:hi('TabLineSel', s:bg_solid, s:color4, 'bold')
