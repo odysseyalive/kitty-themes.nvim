@@ -9,7 +9,12 @@ set termguicolors
 " Define colors
 let s:none = 'NONE'
 let s:bg_solid = '#3a3d4b'
-let s:bg = get(g:, 'kitty_themes_transparent', 0) ? s:none : s:bg_solid
+" Check transparency from global var OR from Lua plugin config
+let s:transparent = get(g:, 'kitty_themes_transparent', 0)
+if !s:transparent
+  silent! let s:transparent = luaeval("(function() local ok, m = pcall(require, 'kitty-themes'); return ok and m.config and m.config.transparent end)()")
+endif
+let s:bg = s:transparent ? s:none : s:bg_solid
 let s:fg = '#eaf2f1'
 let s:cursor = '#eaf2f1'
 let s:selection = '#eaf2f1'
